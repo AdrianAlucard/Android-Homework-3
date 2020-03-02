@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -45,8 +46,24 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "Saved tasks: \n $taskList")
             taskListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, taskList)
             task_list.adapter = taskListAdapter
+            setOnTaskListListener()
         } else {
             Log.d(TAG, "No shared pref data to load")
+        }
+    }
+
+    private fun setOnTaskListListener() {
+        task_list.setOnItemLongClickListener{parent, view, position, id ->
+            val taskToDelete = parent.getItemAtPosition(position).toString()
+            taskList.remove(taskToDelete)
+            val sharedPreferences = getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString(TASK_LIST, Gson().toJson(taskList))
+            editor.apply()
+            taskListAdapter.notifyDataSetChanged()
+            Toast.makeText(this, "Deleted $taskToDelete", Toast.LENGTH_SHORT).show()
+            if(taskList.isEmpty()) Toast.makeText(this, "All tasks are completed!", Toast.LENGTH_SHORT).show()
+            true
         }
     }
 

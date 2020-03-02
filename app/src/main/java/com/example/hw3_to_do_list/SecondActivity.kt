@@ -35,6 +35,16 @@ class SecondActivity : AppCompatActivity() {
         }
     }
 
+    fun saveAndAdd(view: View) {
+        if(isUserTaskValid()) {
+            Log.d(TAG, "Save and add $user_task")
+            createAndSaveTask(user_task.text.toString())
+            Log.d(TAG, "Clearing text field")
+            user_task.editableText.clear()
+            Toast.makeText(this, "Added new task!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun loadTaskList(): MutableList<String> {
         val sharedPreferences = getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
         val tasks = sharedPreferences.getString(TASK_LIST, "") ?: ""

@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="36dp"
+        android:onClick="saveAndAdd"
         android:text="@string/save_and_add"
         app:layout_constraintEnd_toStartOf="@+id/save_and_go_back_button"
         app:layout_constraintHorizontal_bias="0.5"
