@@ -25,10 +25,10 @@ class MainActivity : AppCompatActivity() {
         load()
     }
 
-    override fun onRestart() {
-        Log.d(TAG, "Restarting MainActivity")
-        super.onRestart()
-        load()
+    override fun onResume() {
+        Log.d(TAG, "Resuming MainActivity")
+        super.onResume()
+        reload()
     }
 
     private fun load() {
@@ -49,6 +49,22 @@ class MainActivity : AppCompatActivity() {
             setOnTaskListListener()
         } else {
             Log.d(TAG, "No shared pref data to load")
+        }
+    }
+
+    private fun reload() {
+        // reload logic to avoid extra adapter object creations
+        // just reload the list from the json and pass updates to instantiated objects
+        Log.d(TAG, "Reloading MainActivity with refreshed data")
+        val sharedPreferences = getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
+        val tasks = sharedPreferences.getString(TASK_LIST, "") ?: ""
+
+        if(tasks.isNotEmpty()) {
+            val sType = object : TypeToken<MutableList<String>>() {}.type
+            val savedTaskList = Gson().fromJson<MutableList<String>>(tasks, sType)
+            taskList.clear()
+            taskList.addAll(savedTaskList)
+            taskListAdapter.notifyDataSetChanged()
         }
     }
 
